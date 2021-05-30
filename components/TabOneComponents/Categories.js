@@ -29,15 +29,6 @@ function Categories({config, db, dateRange, setState}) {
           </Text>
         </TouchableOpacity>
       ))}
-
-      <TouchableOpacity style={styles.categoryOption}>
-        <Text style={{...styles.textCenter, color: '#ddd'}}>
-          <FontAwesome5 name="plus" size={38} />
-        </Text>
-        <Text style={{...styles.textCenter, color: '#ddd'}}>
-          New category
-        </Text>
-      </TouchableOpacity>
     </View>
   );
 }

@@ -1,5 +1,5 @@
 import squel from 'squel';
-import {omit} from '../utils/utils';
+import {omit, pick} from '../utils/utils';
 import moment from 'moment';
 
 class SqlDAO {
@@ -26,10 +26,16 @@ class SqlDAO {
 
     const restrictedRecords = [];
     for (const record of recordsArray) {
-      const restricted = omit(record, this._fields);
-      if (restricted) {
-        restrictedRecords.push(restricted);
+      const restricted = pick(record, Object.keys(this._fields));
+      const restrictedRecord = {};
+      for (const field in restricted) {
+        if (Object.keys(this._fields).includes(field)) {
+          restrictedRecord[this._fields[field]] = restricted[field];
+        } else {
+          console.warn(`Unknown field ${field}`);
+        }
       }
+      restrictedRecords.push(restrictedRecord)
     }
     return restrictedRecords;
   }
@@ -65,8 +71,9 @@ class SqlDAO {
   _applyFilters(query, filters) {
     const restrictFilters = this._restrictFilters(filters);
     for (const field in restrictFilters) {
-      if (typeof restrictFilters[field] === 'string') {
-        query.where(field, filters[field]);
+      console.log(restrictFilters[field]);
+      if (typeof restrictFilters[field] === 'string' || typeof restrictFilters[field] === 'number') {
+        query.where(`${field} = ?`, restrictFilters[field]);
         continue;
       }
 
@@ -173,6 +180,7 @@ class SqlDAO {
     const restrictedRecords = omit(record, ['id']);
     updateQuery.setFields(restrictedRecords);
     this._applyFilters(updateQuery, filters);
+    console.log(updateQuery.toString());
 
     return this._transactionPromiseWrapper(updateQuery.toString());
   }

@@ -15,19 +15,13 @@ export default class TransactionsDAO extends SqlDAO {
         description: 'description',
         
         category: 'categories.name',
+        categoryIcon: 'categories.icon',
+        categoryColor: 'categories.color',
         color: 'categories.color'
       },
       squel.select().from('transactions').left_join('categories ON categories.id = transactions.category_id')
     );
     this._previewDAO = new PreviewDAO(connection);
-  }
-
-  async create(records) {
-    for (const record of records) {
-      const {records: [preview]} = await this._previewDAO.read(['value'], {option: record.categoryId});
-      await this._previewDAO.update({value: preview.value + record.amount}, {option: record.categoryId});
-    }
-    return await super.create(records);
   }
 
   async update(record, filters) {    

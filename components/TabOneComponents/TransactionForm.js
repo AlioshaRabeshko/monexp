@@ -1,12 +1,23 @@
-import React, {useState, useEffect, useMemo} from 'react'
+import React, {useState, useMemo, useRef} from 'react'
 import { TouchableOpacity, StyleSheet } from 'react-native'
 import { View, Text, TextInput } from '../Themed';
 import withContextHOC from '../../utils/withContextHOC';
 import useCategories from '../../hooks/useCategories';
 import { FontAwesome5 } from '@expo/vector-icons';
+import TransactionsDAO from '../../modules/TransactionsDAO';
+import moment from 'moment';
 
-function TransactionForm({config, db, category}) {
+function TransactionForm({config, db, category, setState}) {
   const styles = useMemo(() => getStyles(config), []);
+  const [amount, setAmount] = useState('');
+  const [description, setDescription] = useState(null);
+  const transactionsDAO = useMemo(() => new TransactionsDAO(db), [db])
+
+  function createRecord() {
+    transactionsDAO.create([{amount: Number(amount), description, categoryId: category.id}])
+      .then(setState({category: null}))
+      .catch(console.warn)
+  }
 
   return (
     <View style={styles.transactionForm}>
@@ -16,7 +27,10 @@ function TransactionForm({config, db, category}) {
             Amount:
           </Text>
           <TextInput
+            autoFocus
             placeholder="Amount"
+            value={`${amount}`}
+            onChangeText={setAmount}
             style={styles.numberInput}
             keyboardType="number-pad"
             placeholderTextColor="#555"
@@ -36,15 +50,18 @@ function TransactionForm({config, db, category}) {
             style={{...styles.numberInput, fontSize: 15}}
             placeholderTextColor="#555"
             multiline
-            
+            value={description}
+            onChangeText={setDescription}
           />
         </View>
       </View>
       <View style={styles.footer}>
-        <Text>
-          fdsaffdasfdsafdsa
-        </Text>
-
+        <TouchableOpacity style={styles.footerButton} onPress={(() => setState({category: null}))}>
+          <Text style={styles.textCenter}>Cancel</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.footerButton} onPress={createRecord}>
+          <Text style={styles.textCenter}>Apply</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -58,7 +75,6 @@ const getStyles = (config) => StyleSheet.create({
     flexWrap: 'wrap'
   },
   form: {
-    // backgroundColor: '#2c2c54',
     width: config.width,
     height: config.height
   },
@@ -75,9 +91,18 @@ const getStyles = (config) => StyleSheet.create({
     zIndex: 999,
     position: 'absolute',
     width: config.width,
-    height: config.height * 0.15,
-    bottom: 0,
-    flex: 1
+    height: config.height * 0.08,
+    bottom: config.height * 0.08,
+    display: 'flex',
+    backgroundColor: '#473b80',
+    flexDirection: 'row'
+  },
+  footerButton: {
+    justifyContent: 'center',
+    width: config.width * 0.5,
+    height: config.height * 0.08,
+    borderColor: '#555',
+    borderWidth: 1
   },
   numberInput: {
     fontSize: 25,
@@ -90,4 +115,4 @@ const getStyles = (config) => StyleSheet.create({
   }
 });
 
-export default withContextHOC(['config', 'db', 'category'], TransactionForm);
+export default withContextHOC(['config', 'db', 'category', 'setState'], TransactionForm);

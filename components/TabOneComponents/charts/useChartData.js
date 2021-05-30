@@ -6,8 +6,9 @@ function useChartData(db, dateRange) {
   const transactionsDAO = useMemo(() => new TransactionsDAO(db), [db])
   useEffect(() => {
     transactionsDAO.read(
-      ['amount', 'categoryId', 'date', 'category', 'color'],
-      {date: {dateBetween: [dateRange.start, dateRange.end]}}
+      ['amount', 'categoryId', 'date', 'category', 'color', 'description', 'categoryIcon', 'categoryColor'],
+      {date: {dateBetween: [dateRange.start, dateRange.end]}},
+      [['timestamp', 'DESC']]
     )
       .then(setData)
       .catch(console.error);

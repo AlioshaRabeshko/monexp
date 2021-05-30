@@ -8,7 +8,7 @@ import {getDateRange} from '../../utils/utils';
 
 function Header() {
   const {db, config} = useContext(configContext);
-  const {dateRange, chartType, setState} = useContext(stateContext);
+  const {dateRange, chartType, category, setState} = useContext(stateContext);
   const [withDatePicker, setWithDatePicker] = useState(false);
   const [range, setRange] = useState(dateRange);
   const [previewOptions, setPreviewOptions] = useState(['balance']);
@@ -54,13 +54,13 @@ function Header() {
           </View>
           <TouchableOpacity onPress={() => setWithDatePicker(false)}>
             <View style={styles.closeButton}>
-              <Text>CLose</Text>
+              <Text>Close</Text>
             </View>
           </TouchableOpacity>
         </View>
       </Modal>
       <Text onPress={() => setWithDatePicker(true)} style={styles.dateRange}>
-        {chartType !== 'headMap' && (
+        {(chartType !== 'headMap' && !category) && (
           range.range === 'day' ? range.startF : `${range.startF} - ${range.endF}`
         )}
       </Text>

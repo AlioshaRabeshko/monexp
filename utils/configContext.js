@@ -1,11 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { Dimensions } from 'react-native';
-import getConfigs from './getConfigs';
-import TransactionsDAO from '../modules/TransactionsDAO';
 import getSQLiteConnection from './getSQLiteConnection';
-import { Text, View } from '../components/Themed';
-import {getDateRange} from './utils';
-import PropTypes from "prop-types";
+import { Text } from '../components/Themed';
 
 const ConfigContext = React.createContext({})
 const defaultConfig = {

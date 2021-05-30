@@ -2,7 +2,7 @@ import moment from 'moment';
 
 export function omit(objectToOmit, fields) {
   if (typeof objectToOmit === 'object' && Array.isArray(fields)) {
-    if (Array.isArray(objectToPick)) {
+    if (Array.isArray(objectToOmit)) {
       return objectToOmit.filter(element => !fields.includes(element))
     }
 
