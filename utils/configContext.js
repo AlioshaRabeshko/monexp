@@ -5,12 +5,15 @@ import TransactionsDAO from '../modules/TransactionsDAO';
 import getSQLiteConnection from './getSQLiteConnection';
 import { Text, View } from '../components/Themed';
 import {getDateRange} from './utils';
+import PropTypes from "prop-types";
 
 const ConfigContext = React.createContext({})
 const defaultConfig = {
   config: {
     width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height
+    height: Dimensions.get('window').height,
+    chartHeight: 250,
+    currency: '$'
   },
   l: {},
   account: {},
@@ -19,7 +22,9 @@ const defaultConfig = {
 
 export function ConfigProvider(props) {
   const [config, setConfig] = useState({...defaultConfig});
-  useEffect(() => getSQLiteConnection().then(db => setConfig({...config, db, isLoading: false})), [props.config]);
+  useEffect(() => {
+    getSQLiteConnection().then(db => setConfig({...config, db, isLoading: false}))
+  }, [props.config]);
 
   if(config.isLoading) {
     return <Text>Loading...</Text>;

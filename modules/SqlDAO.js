@@ -1,12 +1,13 @@
 import squel from 'squel';
 import {omit} from '../utils/utils';
+import moment from 'moment';
 
 class SqlDAO {
-  constructor(connection, table, fields, filters) {
+  constructor(connection, table, fields, selectQuery) {
     this._connection = connection;
     this._table = table;
     this._fields = fields;
-    this._filters = filters;
+    this._selectQuery = selectQuery
   }
 
   _transactionPromiseWrapper(query, args) {
@@ -73,6 +74,13 @@ class SqlDAO {
         case 'in':
           query.where(`${field} IN ?`, restrictFilters[field].in);
           break;
+        case 'between':
+          query.where(`${field} BETWEEN ? AND ?`, restrictFilters[field].between[0], restrictFilters[field].between[1])
+        case 'dateBetween':
+          query.where(`${field} BETWEEN ? AND ?`,
+            moment(restrictFilters[field].dateBetween[0]).format('YYYY-MM-DD HH:mm:ss'),
+            moment(restrictFilters[field].dateBetween[1]).format('YYYY-MM-DD HH:mm:ss')
+          )
         default:
           break;
       }
@@ -110,7 +118,7 @@ class SqlDAO {
       throw new Error('Nothing to select');
     }
 
-    const readQuery = squel.select().from(this._table);
+    const readQuery = this._selectQuery ? this._selectQuery.clone() : squel.select().from(this._table);
 
     const restrictedFields = this._restrictFields(fields);
     for (const field in restrictedFields) {
@@ -120,6 +128,7 @@ class SqlDAO {
     this._applyOrder(readQuery, orders);
     this._applyLimitOffset(readQuery, limit, offset);
 
+    // console.log(readQuery.toString());
     let records;
     try {
       records = await this._transactionPromiseWrapper(readQuery.toString());

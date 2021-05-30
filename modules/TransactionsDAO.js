@@ -1,15 +1,24 @@
 import SqlDAO from './SqlDAO';
 import PreviewDAO from './PreviewsDAO';
+import squel from 'squel';
 
 export default class TransactionsDAO extends SqlDAO {
   constructor(connection) {
-    super(connection, 'transactions', {
-      id: 'id',
-      amount: 'amount',
-      categoryId: 'category_id',
-      timestamp: 'timestamp',
-      description: 'description'
-    });
+    super(
+      connection,
+      'transactions',
+      {
+        id: 'id',
+        amount: 'amount',
+        categoryId: 'category_id',
+        date: 'timestamp',
+        description: 'description',
+        
+        category: 'categories.name',
+        color: 'categories.color'
+      },
+      squel.select().from('transactions').left_join('categories ON categories.id = transactions.category_id')
+    );
     this._previewDAO = new PreviewDAO(connection);
   }
 

@@ -5,7 +5,8 @@ export default class PreviewDAO extends SqlDAO {
     super(connection, 'previews', {
       id: 'id',
       option: 'option',
-      value: 'value'
+      value: 'value',
+      balance: 'SUM(value)'
     });
   }
 }

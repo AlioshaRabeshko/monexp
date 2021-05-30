@@ -3,7 +3,8 @@ import {getDateRange} from './utils';
 
 const StateContext = React.createContext({})
 const defaultState = {
-  dateRange: getDateRange()
+  dateRange: getDateRange(),
+  chartType: 'pie'
 };
 
 export function StateProvider(props) {

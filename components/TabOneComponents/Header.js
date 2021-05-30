@@ -8,10 +8,11 @@ import {getDateRange} from '../../utils/utils';
 
 function Header() {
   const {db, config} = useContext(configContext);
-  const {dateRange, setState} = useContext(stateContext);
+  const {dateRange, chartType, setState} = useContext(stateContext);
   const [withDatePicker, setWithDatePicker] = useState(false);
   const [range, setRange] = useState(dateRange);
-  const preview = usePreview(db, ['balance']);
+  const [previewOptions, setPreviewOptions] = useState(['balance']);
+  const preview = usePreview(db, previewOptions);
   const styles = getStyles(config);
 
   function selectRange(range) {
@@ -35,19 +36,19 @@ function Header() {
                 <Text>Month</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => selectRange('year')}>
-              <View style={styles.rangeSelect} {...range.range === 'year' ? {bc: 'selected'} : {}}>
-                <Text>Year</Text>
-              </View>
-            </TouchableOpacity>
             <TouchableOpacity onPress={() => selectRange('week')}>
               <View style={styles.rangeSelect} {...range.range === 'week' ? {bc: 'selected'} : {}}>
                 <Text>Week</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => selectRange('day')}>
-              <View style={styles.rangeSelect} {...range.range === 'day' ? {bc: 'selected'} : {}}>
-                <Text>Day</Text>
+            {/* <TouchableOpacity onPress={() => selectRange('3months')}>
+              <View style={styles.rangeSelect} {...range.range === '3months' ? {bc: 'selected'} : {}}>
+                <Text>3 months</Text>
+              </View>
+            </TouchableOpacity> */}
+            <TouchableOpacity onPress={() => selectRange('year')}>
+              <View style={styles.rangeSelect} {...range.range === 'year' ? {bc: 'selected'} : {}}>
+                <Text>Year</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -59,7 +60,9 @@ function Header() {
         </View>
       </Modal>
       <Text onPress={() => setWithDatePicker(true)} style={styles.dateRange}>
-        {range.range === 'day' ? range.startF : `${range.startF} - ${range.endF}`}
+        {chartType !== 'headMap' && (
+          range.range === 'day' ? range.startF : `${range.startF} - ${range.endF}`
+        )}
       </Text>
       <Text style={styles.balance}>Balance: {preview.balance} {config && config.currency}</Text>
     </View>

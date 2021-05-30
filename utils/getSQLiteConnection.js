@@ -13,8 +13,4 @@ async function openDatabase() {
   return SQLite.openDatabase('data.db');
 } 
 
-function getSQLiteConnection() {
-  return openDatabase();
-}
-
-export default getSQLiteConnection;
+export default openDatabase;

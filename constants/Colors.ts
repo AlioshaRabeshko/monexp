@@ -13,13 +13,13 @@ export default {
     selected: '#eaeaea'
   },
   dark: {
-    text: '#fff',
-    background: '#000',
+    text: '#eee',
+    background: '#111',
     tint: tintColorDark,
-    light: '#444',
-    tabIconDefault: '#ccc',
+    light: '#555',
+    tabIconDefault: '#ddd',
     tabIconSelected: tintColorDark,
-    bc: '#1a1a1a',
-    selected: '#111'
+    bc: '#2a2a2a',
+    selected: '#222'
   },
 };
